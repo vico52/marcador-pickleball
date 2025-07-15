@@ -1,0 +1,66 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Marcador Pickleball</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+    .marcador { font-size: 48px; margin: 20px; }
+    .ganador { font-size: 32px; color: green; margin-top: 20px; }
+    button { font-size: 18px; margin: 10px; padding: 10px 20px; }
+  </style>
+</head>
+<body>
+
+  <h1>Marcador Pickleball</h1>
+  <div class="marcador" id="score">0 - 0 - 2</div>
+  <div class="ganador" id="winner"></div>
+
+  <button onclick="puntoGanado(true)">Gana el punto el equipo que saca</button>
+  <button onclick="puntoGanado(false)">Gana el punto el equipo que recibe</button>
+
+  <script>
+    let puntos = [0, 0]; // [equipo1, equipo2]
+    let equipoSirviendo = 0; // 0 = equipo1, 1 = equipo2
+    let servidor = 2; // 1 o 2
+    let juegoTerminado = false;
+
+    function actualizarMarcador() {
+      const puntosQueSaca = puntos[equipoSirviendo];
+      const puntosQueRecibe = puntos[1 - equipoSirviendo];
+      document.getElementById("score").textContent = `${puntosQueSaca} - ${puntosQueRecibe} - ${servidor}`;
+    }
+
+    function verificarGanador() {
+      const p1 = puntos[0];
+      const p2 = puntos[1];
+      if ((p1 >= 11 || p2 >= 11) && Math.abs(p1 - p2) >= 2) {
+        juegoTerminado = true;
+        const ganador = p1 > p2 ? "Equipo 1" : "Equipo 2";
+        document.getElementById("winner").textContent = `🎉 ¡${ganador} gana el partido!`;
+      }
+    }
+
+    function puntoGanado(ganaElQueSaca) {
+      if (juegoTerminado) return;
+
+      if (ganaElQueSaca) {
+        puntos[equipoSirviendo]++;
+      } else {
+        if (servidor === 1) {
+          servidor = 2;
+        } else {
+          equipoSirviendo = 1 - equipoSirviendo;
+          servidor = 1;
+        }
+      }
+
+      actualizarMarcador();
+      verificarGanador();
+    }
+
+    actualizarMarcador();
+  </script>
+
+</body>
+</html>
